@@ -1,2 +1,2 @@
-# portfolio-blog
+# Portfolio
 Extended Portfolio &amp; Personal Blog
