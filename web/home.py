@@ -1,5 +1,5 @@
 from typing import List, Any
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from api import deps
 from schemas.item import Item, ItemCreate, ItemUpdate
@@ -14,5 +14,5 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 @router.get("/")
-def root():
-    return {"message": "Welcome to the Portfolio Blog API - duh"}
+def root(request: Request):
+    return templates.TemplateResponse("/index.html", {"request": request})
