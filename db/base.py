@@ -1,2 +1,12 @@
-from db.base_class import Base  # noqa
-from models.item import Item  # noqa
+from db.base_class import Base
+from models.item import Item
+from typing import Generator
+from db.session import SessionLocal
+
+
+def get_db() -> Generator:
+    try:
+        db = SessionLocal()
+        yield db
+    finally:
+        db.close()

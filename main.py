@@ -137,7 +137,7 @@ if __name__ == "__main__":
 
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
-    port = 5000
+    port = 8000
 
     print(f"http://127.0.0.1:{port}")
     print(f"LAN http://{local_ip}:{port}")

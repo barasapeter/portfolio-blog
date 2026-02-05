@@ -1,7 +1,6 @@
 from typing import List, Any
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
-from api import deps
 from schemas.item import Item, ItemCreate, ItemUpdate
 from models.item import Item as ItemModel
 from pathlib import Path
