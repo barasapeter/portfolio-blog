@@ -1,5 +1,0 @@
-2026-02-06 00:45:26,586 - Portfolio Blog - INFO - POST /api/v1/create-user - Status: 400 - Time: 0.01s
-2026-02-06 00:46:30,724 - Portfolio Blog - INFO - POST /api/v1/create-user - Status: 200 - Time: 0.03s
-2026-02-06 00:46:34,047 - Portfolio Blog - INFO - POST /api/v1/create-user - Status: 400 - Time: 0.01s
-2026-02-06 00:46:47,456 - Portfolio Blog - INFO - POST /api/v1/create-user - Status: 400 - Time: 0.01s
-2026-02-06 00:47:01,717 - Portfolio Blog - INFO - POST /api/v1/create-user - Status: 400 - Time: 0.01s
