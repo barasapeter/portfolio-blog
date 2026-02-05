@@ -115,5 +115,5 @@ class Comment(Base):
         backref="parent",
         remote_side=[id],
         cascade="all, delete-orphan",
-        single_parent=True,  # ✅ This fixes the error
+        single_parent=True,
     )

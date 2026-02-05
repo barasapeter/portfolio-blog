@@ -11,7 +11,7 @@ from db.base_class import Base
 from db.session import engine
 
 from db.session import SessionLocal
-from db import User, Category, Tag, Post, PostStatus
+from db import User, Category, Tag, Post, PostStatus, Comment
 
 
 def init_db():
@@ -26,7 +26,6 @@ def drop_db():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
-
     db = SessionLocal()
     try:
         if not db.query(User).filter_by(username="admin").first():
@@ -37,43 +36,85 @@ async def lifespan(app: FastAPI):
                 full_name="Administrator",
                 bio="The first admin user",
             )
-            db.add(user)
+            user2 = User(
+                username="jane",
+                email="jane@example.com",
+                password_hash="hashed_password_here",
+                full_name="Jane Doe",
+                bio="Another user",
+            )
+            db.add_all([user, user2])
             db.commit()
             db.refresh(user)
+            db.refresh(user2)
 
-            category = Category(
+            category1 = Category(
                 name="General", slug="general", description="General posts"
             )
-            db.add(category)
+            category2 = Category(
+                name="Tech", slug="tech", description="Technology related posts"
+            )
+            db.add_all([category1, category2])
             db.commit()
-            db.refresh(category)
+            db.refresh(category1)
+            db.refresh(category2)
 
-            tag = Tag(name="Introduction", slug="introduction")
-            db.add(tag)
+            tag1 = Tag(name="Introduction", slug="introduction")
+            tag2 = Tag(name="Tutorial", slug="tutorial")
+            tag3 = Tag(name="FastAPI", slug="fastapi")
+            db.add_all([tag1, tag2, tag3])
             db.commit()
-            db.refresh(tag)
+            db.refresh(tag1)
+            db.refresh(tag2)
+            db.refresh(tag3)
 
-            post = Post(
+            post1 = Post(
                 title="Welcome to the Blog!",
                 slug="welcome-to-the-blog",
                 excerpt="This is the first post in the blog.",
                 content="Hello world! This is the very first post.",
                 author_id=user.id,
-                category_id=category.id,
+                category_id=category1.id,
                 status=PostStatus.PUBLISHED,
             )
-            post.tags.append(tag)
-            db.add(post)
-            db.commit()
+            post1.tags.extend([tag1, tag2])
 
-            print("Dummy data inserted successfully")
-        else:
-            print("Dummy data already exists, skipping...")
+            post2 = Post(
+                title="FastAPI Tutorial",
+                slug="fastapi-tutorial",
+                excerpt="Learn FastAPI basics.",
+                content="This is a tutorial post about FastAPI.",
+                author_id=user2.id,
+                category_id=category2.id,
+                status=PostStatus.DRAFT,
+            )
+            post2.tags.extend([tag2, tag3])
+
+            db.add_all([post1, post2])
+            db.commit()
+            db.refresh(post1)
+            db.refresh(post2)
+
+            comment1 = Comment(
+                post_id=post1.id,
+                author_name="John Doe",
+                author_email="john@example.com",
+                content="This is the first comment on the first post.",
+                status=CommentStatus.APPROVED,
+            )
+            comment2 = Comment(
+                post_id=post1.id,
+                author_name="Jane Smith",
+                author_email="jane@example.com",
+                content="This is a reply to the first comment.",
+                status=CommentStatus.APPROVED,
+                parent_id=comment1.id,
+            )
+            db.add_all([comment1, comment2])
+            db.commit()
     finally:
         db.close()
-
     yield
-
     print("🛑 App is shutting down...")
 
 
