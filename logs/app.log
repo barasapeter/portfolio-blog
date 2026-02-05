@@ -1,0 +1,36 @@
+2026-02-05 23:02:42,637 - Portfolio Blog - INFO - GET /api/v1/create-user - Status: 500
+2026-02-05 23:02:42,644 - Portfolio Blog - ERROR - Internal Server Error during Create User - Traceback (most recent call last):
+  File "C:\Users\nickk\dev\MyPortfolioBlog\api\v1\api.py", line 23, in create_user
+    payload = await request.json()
+              ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nickk\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\requests.py", line 249, in json
+    self._json = json.loads(body)
+                 ~~~~~~~~~~^^^^^^
+  File "C:\Users\nickk\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\nickk\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nickk\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+2026-02-05 23:06:12,073 - Portfolio Blog - INFO - GET /api/v1/create-user - Status: 500
+2026-02-05 23:06:12,080 - Portfolio Blog - ERROR - Internal Server Error during Create User - Traceback (most recent call last):
+  File "C:\Users\nickk\dev\MyPortfolioBlog\api\v1\api.py", line 23, in create_user
+    payload = await request.json()
+              ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nickk\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\requests.py", line 249, in json
+    self._json = json.loads(body)
+                 ~~~~~~~~~~^^^^^^
+  File "C:\Users\nickk\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\nickk\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nickk\AppData\Local\Programs\Python\Python313\Lib\json\decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
