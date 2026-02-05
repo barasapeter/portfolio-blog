@@ -17,7 +17,6 @@ logger = logging.getLogger(settings.PROJECT_NAME)
 
 
 @api_router.post("/create-user")
-@api_router.get("/create-user")
 async def create_user(request: Request, db: Session = Depends(get_db)):
     try:
         payload = await request.json()
