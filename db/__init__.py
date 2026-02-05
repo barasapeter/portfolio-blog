@@ -111,5 +111,9 @@ class Comment(Base):
 
     post = relationship("Post", back_populates="comments")
     replies = relationship(
-        "Comment", backref="parent", remote_side=[id], cascade="all, delete-orphan"
+        "Comment",
+        backref="parent",
+        remote_side=[id],
+        cascade="all, delete-orphan",
+        single_parent=True,  # ✅ This fixes the error
     )

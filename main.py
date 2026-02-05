@@ -10,6 +10,9 @@ import socket
 from db.base_class import Base
 from db.session import engine
 
+from db.session import SessionLocal
+from db import User, Category, Tag, Post, PostStatus
+
 
 def init_db():
     Base.metadata.create_all(bind=engine)
@@ -22,10 +25,55 @@ def drop_db():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("App is starting up...")
     init_db()
 
+    db = SessionLocal()
+    try:
+        if not db.query(User).filter_by(username="admin").first():
+            user = User(
+                username="admin",
+                email="admin@example.com",
+                password_hash="hashed_password_here",
+                full_name="Administrator",
+                bio="The first admin user",
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+            category = Category(
+                name="General", slug="general", description="General posts"
+            )
+            db.add(category)
+            db.commit()
+            db.refresh(category)
+
+            tag = Tag(name="Introduction", slug="introduction")
+            db.add(tag)
+            db.commit()
+            db.refresh(tag)
+
+            post = Post(
+                title="Welcome to the Blog!",
+                slug="welcome-to-the-blog",
+                excerpt="This is the first post in the blog.",
+                content="Hello world! This is the very first post.",
+                author_id=user.id,
+                category_id=category.id,
+                status=PostStatus.PUBLISHED,
+            )
+            post.tags.append(tag)
+            db.add(post)
+            db.commit()
+
+            print("Dummy data inserted successfully")
+        else:
+            print("Dummy data already exists, skipping...")
+    finally:
+        db.close()
+
     yield
+
     print("🛑 App is shutting down...")
 
 
