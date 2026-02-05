@@ -1,6 +1,7 @@
 # Building My Blogging App: Lessons Learned 
 
 # Logging
+Date: Fri, 6 Feb 2026 21:00
 ## Introduction
 
 This blog post is about my experience creating my new blogging app from scratch. The purpose of this project is not only to create a working application, but also to show off my system design, logging, api security, and clean coding standards skills as a software engineer (all important parts of being a good software engineer).
