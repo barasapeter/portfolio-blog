@@ -1,3 +1,4 @@
+const terminalWrapper = document.getElementById("terminal-wrapper");
 const terminal = document.getElementById("terminal");
 const hiddenInput = document.getElementById("hiddenInput");
 const inputSpan = document.getElementById("input");
@@ -20,18 +21,53 @@ function updatePlaceholder() {
         inputSpan.textContent.length === 0 ? "inline" : "none";
 }
 
-terminal.addEventListener("mousedown", () => {
-    hiddenInput.focus();
+
+terminalWrapper.addEventListener("click", () => {
+    hiddenInput.focus({ preventScroll: true });
 });
 
-hiddenInput.addEventListener("blur", () => {
-    setTimeout(() => hiddenInput.focus(), 0);
+
+hiddenInput.addEventListener("keydown", (e) => {
+
+    if (showingOutput && e.key.length === 1) {
+        outputCanvas.style.display = "none";
+        showingOutput = false;
+    }
+
+    if (e.key === "Backspace") {
+        inputSpan.textContent = inputSpan.textContent.slice(0, -1);
+        updateCursor();
+        e.preventDefault();
+        return;
+    }
+
+    if (e.key === "Enter") {
+        const command = inputSpan.textContent.trim();
+
+        userInputEcho.innerText = command;
+        outputCanvas.style.display = "block";
+        outputCanvas.classList.remove("hidden");
+        showingOutput = true;
+
+        handleCommand(command);
+
+        inputSpan.textContent = "";
+        updateCursor();
+        e.preventDefault();
+        return;
+    }
+
+    if (e.key.length === 1) {
+        inputSpan.textContent += e.key;
+        updateCursor();
+        e.preventDefault();
+    }
 });
+
 
 function handleCommand(command) {
     const output = document.getElementById("commandOutput");
 
-    // Helper to wrap text in color
     const color = (text, type) => {
         switch (type) {
             case "keyword": return `<span class="text-cyan-400 font-bold">${text}</span>`;
@@ -42,10 +78,8 @@ function handleCommand(command) {
         }
     };
 
-    // Split command + flags
     const [base, flag] = command.split(" ");
 
-    // Enable HTML in output
     output.innerHTML = "";
 
     switch (base) {
@@ -157,44 +191,6 @@ ${color('Type "help" to see available commands.', "note")}
 }
 
 
-
-hiddenInput.addEventListener("keydown", (e) => {
-
-    if (showingOutput && e.key.length === 1) {
-        outputCanvas.style.display = "none";
-        showingOutput = false;
-    }
-
-    if (e.key === "Backspace") {
-        inputSpan.textContent = inputSpan.textContent.slice(0, -1);
-        updateCursor();
-        e.preventDefault();
-        return;
-    }
-
-    if (e.key === "Enter") {
-        const command = inputSpan.textContent.trim();
-
-        userInputEcho.innerText = command;
-        outputCanvas.style.display = "block";
-        outputCanvas.classList.remove("hidden");
-        showingOutput = true;
-
-        handleCommand(command);
-
-        inputSpan.textContent = "";
-        updateCursor();
-        e.preventDefault();
-    }
-
-
-    if (e.key.length === 1) {
-        inputSpan.textContent += e.key;
-        updateCursor();
-        e.preventDefault();
-    }
-});
-
 updateCursor();
-hiddenInput.focus();
+hiddenInput.focus({ preventScroll: true });
 lucide.createIcons();
