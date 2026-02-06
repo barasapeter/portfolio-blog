@@ -49,9 +49,10 @@ async def login(response: Response, request: Request, db: Session = Depends(get_
             .first()
         )
 
-        if not user:
+        if not user or payload["password"] != user.password_hash:
             return JSONResponse(
-                status_code=401, detail={"detail": "The sign-in details are incorrect."}
+                status_code=401,
+                content={"detail": "The sign-in details are incorrect."},
             )
 
         user_id = user.id
