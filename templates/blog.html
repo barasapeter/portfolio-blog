@@ -2,28 +2,209 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Blog</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/static/images/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon-16x16.png">
 </head>
 
-<body>
-    <h1>Hello, I'm Bloggy :)</h1>
-    <h2>ID:: {{ user_id }}</h2>
+<body class="bg-neutral-50 text-neutral-800 antialiased">
 
-    <div>
-        {% for post in posts %}
-        <div>
-            <h3>{{ post }}</h3>
-            <code>{{ post.content }}</code>
-            <code>{{ post.author }}</code>
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-neutral-200">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="h-16 flex items-center justify-between">
+
+                <!-- Brand + Nav -->
+                <div class="flex items-center gap-10">
+                    <a href="/blog" class="flex items-center gap-2">
+                        <span class="font-semibold tracking-tight text-neutral-900">
+                            Blog
+                        </span>
+                    </a>
+
+                    <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-neutral-600">
+                        <a href="/blog" class="hover:text-neutral-900">Articles</a>
+                        <a href="/topics" class="hover:text-neutral-900">Topics</a>
+                        <a href="/about" class="hover:text-neutral-900">About</a>
+                    </nav>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-4">
+
+                    <!-- Search -->
+                    <form action="/blog/search" method="get" class="hidden sm:block">
+                        <div class="relative">
+                            <input type="text" name="q" placeholder="Search articles…"
+                                class="w-64 rounded-lg border border-neutral-200 bg-neutral-50 py-2 pl-9 pr-3 text-sm placeholder-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-neutral-900/10" />
+                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" fill="none"
+                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m21 21-4.35-4.35m1.85-5.4a7.25 7.25 0 1 1-14.5 0 7.25 7.25 0 0 1 14.5 0Z" />
+                            </svg>
+                        </div>
+                    </form>
+
+                    {% if is_authenticated %}
+                    <div class="relative group">
+                        <button
+                            class="flex items-center gap-2 text-sm font-medium text-neutral-700 hover:text-neutral-900">
+                            <div
+                                class="h-8 w-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-semibold">
+                                {{ user_id }}
+                            </div>
+                            <svg class="h-4 w-4 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 9.75-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </button>
+
+                        <div
+                            class="absolute right-0 mt-2 w-40 rounded-lg border border-neutral-200 bg-white shadow-sm opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
+                            <a href="/dashboard" class="block px-4 py-2 text-sm hover:bg-neutral-50">Dashboard</a>
+                            <a href="/logout" class="block px-4 py-2 text-sm hover:bg-neutral-50">Sign out</a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <a href="/login"
+                        class="inline-flex items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m18 12-3-3m3 3-3 3m3-3H9" />
+                        </svg>
+                        Sign in
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
+    </header>
+
+    <!-- Main -->
+    <main class="max-w-7xl mx-auto px-6 py-12 space-y-10">
+
+        {% for post in posts %}
+        <article class="bg-white rounded-2xl border border-neutral-200 overflow-hidden hover:shadow-sm transition">
+
+            {% if post.featured_image %}
+            <div class="h-60 w-full overflow-hidden bg-neutral-100">
+                <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="h-full w-full object-cover" />
+            </div>
+            {% endif %}
+
+            <div class="p-8 space-y-6">
+
+                <!-- Meta -->
+                <div class="flex items-center justify-between text-sm text-neutral-500">
+                    <div class="flex items-center gap-3">
+                        {% if post.category %}
+                        <span class="px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-700 text-xs font-medium">
+                            {{ post.category.name }}
+                        </span>
+                        {% endif %}
+                        {% if post.published_at %}
+                        <span>{{ post.published_at.strftime("%b %d, %Y") }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <span>{{ post.view_count }} views</span>
+                        <span>{{ post.comments | length }} comments</span>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <h2 class="text-2xl font-semibold tracking-tight leading-snug">
+                    <a href="/blog/{{ post.slug }}" class="hover:underline">
+                        {{ post.title }}
+                    </a>
+                </h2>
+
+                <!-- Excerpt -->
+                {% if post.excerpt %}
+                <p class="text-neutral-600 leading-relaxed max-w-3xl">
+                    {{ post.excerpt }}
+                </p>
+                {% endif %}
+
+                <!-- Tags -->
+                {% if post.tags %}
+                <div class="flex flex-wrap gap-2">
+                    {% for tag in post.tags %}
+                    <span class="text-xs text-neutral-600 bg-neutral-100 px-2 py-1 rounded-md">
+                        #{{ tag.name }}
+                    </span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Footer -->
+                <div class="pt-6 border-t flex items-center justify-between">
+
+                    <!-- Author -->
+                    <div class="flex items-center gap-3">
+                        {% if post.author and post.author.avatar_url %}
+                        <img src="{{ post.author.avatar_url }}"
+                            alt="{{ post.author.full_name or post.author.username }}"
+                            class="h-9 w-9 rounded-full object-cover" />
+                        {% else %}
+                        <div
+                            class="h-9 w-9 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-semibold">
+                            {{ post.author.username[0]|upper if post.author else "?" }}
+                        </div>
+                        {% endif %}
+
+                        <div class="leading-tight">
+                            <div class="text-sm font-medium">
+                                {{ post.author.full_name or post.author.username if post.author else "Unknown author" }}
+                            </div>
+                            {% if post.author and post.author.bio %}
+                            <div class="text-xs text-neutral-500 line-clamp-1">
+                                {{ post.author.bio }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center gap-5 text-sm text-neutral-600">
+                        <a href="/blog/{{ post.slug }}" class="font-medium hover:text-neutral-900">
+                            Read article
+                        </a>
+
+                        {% if is_authenticated and post.author and post.author.id == user_id %}
+                        <a href="/blog/{{ post.id }}/edit" class="hover:text-neutral-900">
+                            Edit
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </article>
         {% endfor %}
-    </div>
+
+        {% if posts|length == 0 %}
+        <div class="text-center py-24 text-neutral-500">
+            No published posts yet.
+        </div>
+        {% endif %}
+
+    </main>
+
+    <footer class="border-t border-neutral-200 mt-20">
+        <div class="max-w-7xl mx-auto px-6 py-8 text-sm text-neutral-500">
+            © {{ now().year if now is defined else "2026" }} · Clean words, sharp thoughts.
+        </div>
+    </footer>
+
 </body>
 
 </html>
