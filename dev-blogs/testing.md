@@ -2,22 +2,22 @@
 
 ## Introduction
 
-As I developed my portfolio blogging app, one thing quickly became clear: **testing is essential**. Not only does it ensure the app works correctly, but it also demonstrates a disciplined, professional approach to development — something recruiters really notice.
+While creating my blog application, it became apparent to me that **testing is a must do** for BOTH the functionality of your app and as evidence of a well organized approach to developing a quality product.
 
-In this post, I want to share **how I implemented tests**, what I learned, and how I plan to extend testing to cover the entire application.
+This article will explain how I performed testing, what I learned from performing these tests, and my plans to expand testing across the full application.
 
 ---
 
 ## Testing the `/create-user` Endpoint
 
-The first major piece I tackled was **user creation**. This endpoint has several responsibilities:
+The initial element I worked on was **creating users**. This endpoint served multiple purposes such as:
 
-- Validating mandatory fields like `username` and `full_name`.
-- Ensuring passwords and emails meet security and format requirements.
-- Preventing duplicate users in the database.
-- Handling optional fields like `bio`.
+- Validating required fields such as user name and full name.
+- Ensuring that passwords meet the minimum security requirements and that email addresses conform to accepted formats.
+- Preventing multiple users from being created in the database.
+- Allowing users to provide optional information such as a brief biography.
 
-To verify all of this, I wrote **automated tests using FastAPI’s `TestClient` and pytest**.
+I also created **automated tests with FastAPI's TestClient and pytest** to verify that everything worked correctly.
 
 ### Example Test
 
@@ -41,10 +41,10 @@ def test_create_user_success():
 
 ### What I Learned
 
-* **Test isolation**: Tests should run without depending on production data. Using separate or in-memory databases ensures consistency.
-* **Edge cases matter**: Testing just the "happy path" isn’t enough. Missing fields, invalid passwords, and duplicate users all require coverage.
-* **Error handling is critical**: Writing tests forces me to think about the ways the endpoint can fail and ensures meaningful error messages are returned.
-* **Confidence in refactoring**: With tests in place, I can safely make changes knowing functionality is preserved.
+* **Isolate Tests**: Running tests completely indpendent of all production data. Use a separate database or an in-memory database to provide consistent results across all tests.
+* **Edge Case Tests**: Tests should include edge cases whenever achievable. Missing fields, invalid passwords and users attempts at duplicates are all things to test for.
+* **Importance of Error Handling**: Writing tests helps me think through the many ways an endpoint can fail and determine the appropriate message to return on failure.
+* **Refactoring Confidence**: I can make confident changes because I have already tested the initial functionality before performing any changes.
 
 ---
 
@@ -90,14 +90,14 @@ I now have a **structured approach to testing**:
 * **Use mocks and test DBs**: Avoid affecting real data or production logs.
 * **Log insights during testing**: Helps track unexpected behavior and informs future improvements.
 
-This approach not only **improves code quality** but also **demonstrates professionalism**, something recruiters notice in portfolio projects.
+This approach not only **improves code quality** but also **demonstrates professionalism**.
 
 ---
 
 ## Conclusion
 
-Testing has shifted from being an afterthought to a **core part of my development workflow**. By focusing on the `/create-user` endpoint first, I gained valuable insights into designing comprehensive test coverage.
+Testing has gone from an afterthought to a **core component of my development workflow**. This has allowed me to have a clearer understanding of comprehensive testing coverage when designing my applications through focusing on the `/create-user` endpoint first.
 
-Going forward, I plan to apply these principles across all app features, gradually building **a fully-tested, robust blogging platform**.
+As I continue through development, I want to apply this knowledge throughout all features of the application for the purpose of creating **an entirely tested and strong blogging platform**.
 
-This project now reflects both **technical skills** and **a disciplined approach to software development**, making it my favorite blog.
+As a result, this project contains both **technical abilities** and **a structured development process**, making it my favourite blog.
