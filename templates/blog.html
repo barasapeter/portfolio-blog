@@ -31,7 +31,7 @@
                     <h1></h1>
                 </a>
 
-                <h1 class="text-xl font-bold">My Recent Updates</h1>
+                <h1 class="text-xl font-bold">Recent Updates</h1>
 
                 <div class="w-8"></div>
             </div>
@@ -45,9 +45,17 @@
                     </button>
                 </div>
                 <div class="flex-1 text-center">
-                    <button class="py-4 px-4 font-bold text-[15px] text-[#536471] hover:bg-[#f7f9f9] transition w-full">
+                    {% if is_authenticated %}
+                    <button onclick="window.location.href='/account'"
+                        class="py-4 px-4 font-bold text-[15px] text-[#536471] hover:bg-[#f7f9f9] transition w-full">
                         My Account
                     </button>
+                    {% else %}
+                    <button onclick="window.location.href='/login'"
+                        class="py-4 px-4 font-bold text-[15px] text-[#536471] hover:bg-[#f7f9f9] transition w-full">
+                        Log In
+                    </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
