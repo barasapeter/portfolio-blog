@@ -21,6 +21,9 @@
     </style>
 </head>
 
+
+
+
 <body class="bg-white text-[#0f1419] min-h-screen flex items-center justify-center p-4">
 
     <div class="w-full max-w-[600px]">
@@ -73,7 +76,12 @@
                 <div class="flex-1 border-t border-[#eff3f4]"></div>
             </div>
 
-            <form action="/login" method="post" class="space-y-6">
+            <div id="errorBanner"
+                class="hidden mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-red-700 text-[15px]">
+            </div>
+
+
+            <form id="loginForm" novalidate class="space-y-6">
                 <div>
                     <div class="relative">
                         <input type="text" name="username" id="username" placeholder=" "
@@ -94,10 +102,11 @@
                     </div>
                 </div>
 
-                <button type="submit"
-                    class="w-full bg-[#0f1419] text-white rounded-full py-3 font-bold text-[17px] hover:bg-[#272c30] transition">
+                <button id="loginBtn" type="submit" class="w-full bg-[#0f1419] text-white rounded-full py-3 font-bold text-[17px]
+                    hover:bg-[#272c30] transition disabled:opacity-60 disabled:cursor-not-allowed">
                     Next
                 </button>
+
 
                 <button type="button"
                     class="w-full bg-white border border-[#cfd9de] rounded-full py-3 font-bold text-[17px] hover:bg-[#e7e9ea] transition">
@@ -116,6 +125,7 @@
         </div>
 
     </div>
+    <script src="/static/javascript/login.js"></script>
 
 </body>
 
