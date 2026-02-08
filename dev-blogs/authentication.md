@@ -1,4 +1,6 @@
-# Building Authentication the Right Way: Lessons from My Blogging App
+# Building Authentication the Right Way
+
+## Lessons from My Blogging App
 
 When I started building this blogging application, authentication felt like one of those features that is *deceptively simple*. Log in a user, set a session, done — right?
 
