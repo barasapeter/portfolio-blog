@@ -27,13 +27,20 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         clearError();
 
-        const username = document.getElementById("username").value.trim();
+        const identifier = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value;
 
-        if (!username || !password) {
+        if (!identifier || !password) {
             showError("Please enter both username/email and password.");
             return;
         }
+
+        const payload = {
+            password,
+            ...(identifier.includes("@")
+                ? { email: identifier }
+                : { username: identifier }),
+        };
 
         setLoading(true);
 
@@ -44,10 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     "Content-Type": "application/json",
                 },
                 credentials: "include",
-                body: JSON.stringify({
-                    username,
-                    password,
-                }),
+                body: JSON.stringify(payload),
             });
 
             const data = await res.json();
@@ -58,7 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // success
             window.location.href = "/";
         } catch (err) {
             console.error(err);
