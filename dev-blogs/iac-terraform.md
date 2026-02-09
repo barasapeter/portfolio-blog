@@ -94,7 +94,7 @@ sudo -u postgres psql
 ```
 
 ```sql
-ALTER USER postgres PASSWORD '....PWD...';
+ALTER USER postgres PASSWORD '....Password [REDACTED]....';
 \q
 ```
 
