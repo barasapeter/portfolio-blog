@@ -86,6 +86,10 @@ def account(
     logged_in_user = None
     if user_id:
         logged_in_user = db.query(User).filter(User.id == user_id).first()
+        followable = False
+
+    else:
+        followable = True
 
     if username:
         profile_user = db.query(User).filter(User.username == username).first()
@@ -133,5 +137,6 @@ def account(
             "user": profile_user,
             "show_edit_button": show_edit_button,
             "posts": posts,
+            "followable": followable,
         },
     )
