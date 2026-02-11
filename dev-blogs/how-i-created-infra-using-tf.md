@@ -1,0 +1,6 @@
+- installed terraform
+- installed aws cli
+- created access key on Iam on aws
+- aws configure: enter access key and secret key
+- enter region: us-east-1
+- default output format: Hit Enter [None]
