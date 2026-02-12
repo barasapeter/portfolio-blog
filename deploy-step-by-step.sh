@@ -1,0 +1,15 @@
+- Logged into AWS console
+- create an ec2 instance:
+    - set Name and tags  Info Name: portfolio-prod-machine
+    - Application and OS Images (Amazon Machine Image): Ubuntu
+    - Amazon Machine Image (AMI): Ubuntu Server 24.04 LTS (HVM), SSD volume type
+    - Instance type: t3.micro
+    - no key pair
+    - Network settings:
+        - Firewall (Security Groups):
+            - allow ssh traffic from: Anywhere (0.0.0.0/0)
+            - Allow HTTPS traffic from the internet
+            - Allow HTTP traffic from the internet
+    - storage:
+        - 8 Gib GP3 Root volume, 3000 IOPS, Not encrypted
+- launnched instance
