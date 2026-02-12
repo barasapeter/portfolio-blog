@@ -132,5 +132,3 @@ $ sudo certbot --nginx -d cardlabs-sandbox.duckdns.org -d cardlabs-sandbox.duckd
 
 - Add Auto-renew check
 $ sudo systemctl status certbot.timer
-
-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
