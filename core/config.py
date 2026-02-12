@@ -8,14 +8,15 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "changethis"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
-    # Database
     POSTGRES_SERVER: str
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
 
-    # Secrets
     JWT_SECRET_KEY: str
+
+    AWS_ACCESS_KEY: str
+    AWS_SECRET_ACCESS_KEY: str
 
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
