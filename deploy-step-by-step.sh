@@ -80,14 +80,125 @@ $ sudo apt install postgresql postgresql-contrib -y
 $ sudo -i -u postgres psql
 - Create database
 postgres=# CREATE DATABASE portfolio_blog;
-postgres=# ALTER USER postgres PASSWORD '1988';
+
+- exit postgres shell
+
+- Reset the postgres password
+$ sudo -u postgres psql
+
+- Youll now be inside the PostgreSQL shell (postgres=#).
+- Then run:
+
+postgres=# \password postgres
+
+- Enter new password for user "postgres": 
+- Enter it again: 
+
+
 
 - exit postgres shell
 - Install a missing CV2 libraries
 $ sudo apt install -y libgl1 libglib2.0-0
 $ sudo apt install -y libsm6 libxrender1 libxext6
 
+
 - Test gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000
 $ gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000
 
+- at this point, gunicorn should run and shut down autonomously
+
+
+
+
+- Set up a Systemd service (so app runs in background)
+$ sudo nano /etc/systemd/system/fastapi.service
+- nano opens. paste:
+```
+[Unit]
+Description=FastAPI app
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/MyPortfolioNPersonalBlog
+ExecStart=/home/ubuntu/MyPortfolioNPersonalBlog/venv/bin/gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 127.0.0.1:8000
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+- save and exit
+
+Note: (if there is a better way of creating this file you are free to do so. expecially in a bash script)
+
+- Start & enable:
+$ sudo systemctl daemon-reload
+$ sudo systemctl start fastapi
+$ sudo systemctl enable fastapi
+$ sudo systemctl status fastapi
+
+- the service should be running
+
+
+
+
+
+
+- Set up Nginx as a reverse proxy
+- install nginx
+
+$ sudo apt install nginx -y
+
+- Create config:
+$ sudo nano /etc/nginx/sites-available/fastapi
+
+- paste:
+```
+server {
+    server_name cardlabs.cloud www.cardlabs.cloud;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+
+
+
+- Enable site
+$ sudo ln -s /etc/nginx/sites-available/fastapi /etc/nginx/sites-enabled
+$ sudo nginx -t
+$ sudo systemctl restart nginx
+
+
+
+
+
+- Secure with HTTPS (Lets Encrypt)
+$ sudo apt install certbot python3-certbot-nginx -y
+
+- point your instance IP to the DNS provider
+
+- Generate SSL
+$ sudo certbot --nginx -d cardlabs.cloud -d cardlabs.cloud
+
+- You will see:
+```
+(venv) ubuntu@ip-172-31-27-108:~/MyPortfolioNPersonalBlog$ sudo certbot --nginx -d cardlabs.cloud -d cardlabs.cloud
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Enter email address (used for urgent renewal and security notices)
+(Enter 'c' to cancel): 
+```
+
+- Type email address: barasapeter52@gmail.com
+- press enter to confirm
+
+
+- Add Auto-renew check
+$ sudo systemctl status certbot.timer
 
