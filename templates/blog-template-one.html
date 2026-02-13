@@ -74,17 +74,14 @@
   </div>
 
   <!-- Top Nav -->
-  <header class="sticky top-0 z-40 border-b border-neutral-200/70 bg-white/80 backdrop-blur dark:border-neutral-800/70 dark:bg-neutral-950/70">
+  <header class="top-0 z-40 border-neutral-200/70 bg-white/30 backdrop-blur dark:border-neutral-800/70 dark:bg-neutral-950/70">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex h-16 items-center justify-between gap-3">
         <!-- Brand -->
         <a href="#" class="flex items-center gap-3 group">
-          <div class="h-9 w-9 rounded-xl bg-brand-600/10 ring-1 ring-brand-600/20 grid place-items-center">
-            <span class="text-brand-600 font-black tracking-tight">B</span>
-          </div>
           <div class="leading-tight">
-            <div class="font-extrabold tracking-tight group-hover:text-brand-600 transition">Portfolio Blog</div>
-            <div class="text-xs text-neutral-500 dark:text-neutral-400">Engineering notes, deep dives, and systems.</div>
+            <div class="font-extrabold tracking-tight group-hover:text-brand-600 transition">Peter barasa</div>
+            <div class="text-xs text-neutral-500 dark:text-neutral-400">Blogs, products & Use cases</div>
           </div>
         </a>
 
@@ -247,16 +244,11 @@
     <section class="pt-10 pb-6">
       <div class="grid gap-6 lg:grid-cols-12 lg:items-end">
         <div class="lg:col-span-8">
-          <div class="inline-flex items-center gap-2 rounded-full border border-brand-600/20 bg-brand-600/10 px-3 py-1 text-xs font-semibold text-brand-700 dark:text-brand-300">
-            <span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span>
-            Technical writing, but with production blood pressure.
-          </div>
           <h1 class="mt-4 text-3xl font-black tracking-tight sm:text-4xl">
-            A blog layout built for heavyweight engineering posts.
+            Built for heavyweight engineering posts. Super opinionated.
           </h1>
           <p class="mt-3 max-w-2xl text-neutral-600 dark:text-neutral-300">
-            Deep dives. Incident write-ups. System design. Performance notes. Security checklists.
-            Structured like a serious publication, not a weekend hobby.
+            Incident write-ups. System design. Performance notes. Security checklists. A little ranting.
           </p>
 
           <!-- Quick links -->
@@ -267,35 +259,7 @@
           </div>
         </div>
 
-        <!-- Right rail: Newsletter -->
-        <div class="lg:col-span-4">
-          <div class="rounded-2xl border border-neutral-200 bg-white p-5 shadow-soft dark:border-neutral-800 dark:bg-neutral-950">
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <div class="font-semibold">Newsletter</div>
-                <div class="mt-1 text-sm text-neutral-600 dark:text-neutral-300">
-                  One email when something worth reading ships.
-                </div>
-              </div>
-              <div class="h-10 w-10 rounded-xl bg-brand-600/10 ring-1 ring-brand-600/20 grid place-items-center">
-                <span class="text-brand-600 font-black">N</span>
-              </div>
-            </div>
-            <form class="mt-4 flex gap-2">
-              <input
-                type="email"
-                placeholder="you@domain.com"
-                class="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-400 focus:ring-4 focus:ring-brand-500/10 dark:border-neutral-800 dark:bg-neutral-950 dark:focus:border-brand-500"
-              />
-              <button type="button" class="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">
-                Subscribe
-              </button>
-            </form>
-            <div class="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
-              No spam. No nonsense. Unsubscribe anytime.
-            </div>
-          </div>
-        </div>
+        
       </div>
     </section>
 
@@ -807,11 +771,40 @@ LIMIT 20;</code></pre>
       </div>
     </section>
 
+    <div class="lg:col-span-4">
+      <div class="rounded-2xl border border-neutral-200 bg-white p-5 shadow-soft dark:border-neutral-800 dark:bg-neutral-950">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <div class="font-semibold">Newsletter</div>
+            <div class="mt-1 text-sm text-neutral-600 dark:text-neutral-300">
+              One email when something worth reading ships.
+            </div>
+          </div>
+          <div class="h-10 w-10 rounded-xl bg-brand-600/10 ring-1 ring-brand-600/20 grid place-items-center">
+            <span class="text-brand-600 font-black">N</span>
+          </div>
+        </div>
+        <form class="mt-4 flex gap-2">
+          <input
+            type="email"
+            placeholder="you@domain.com"
+            class="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-400 focus:ring-4 focus:ring-brand-500/10 dark:border-neutral-800 dark:bg-neutral-950 dark:focus:border-brand-500"
+          />
+          <button type="button" class="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">
+            Subscribe
+          </button>
+        </form>
+        <div class="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+          Unsubscribe anytime.
+        </div>
+      </div>
+    </div>
+
     <!-- Footer -->
     <footer class="py-12">
       <div class="gradient-line"></div>
       <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-sm text-neutral-600 dark:text-neutral-300">
-        <div>© <span id="year"></span> Portfolio Blog. Built for serious writing.</div>
+        <div>© <span id="year"></span> Portfolio Blog.</div>
         <div class="flex gap-4">
           <a href="#" class="hover:text-brand-600">Home</a>
           <a href="#latest" class="hover:text-brand-600">Posts</a>
