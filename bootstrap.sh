@@ -2,16 +2,18 @@
 set -euo pipefail
 
 # ========= EDIT THESE =========
-DOMAIN="cardlabs.cloud"
+DOMAIN="blog.cardlabs.cloud"                       # e.g. blog.cardlabs.cloud
 EMAIL="barasapeter52@gmail.com"
 REPO="https://github.com/barasapeter/MyPortfolioNPersonalBlog.git"
 APP_DIR="/home/ubuntu/MyPortfolioNPersonalBlog"
 DB_NAME="portfolio_blog"
+SERVICE_NAME="fastapi"
+BIND_ADDR="127.0.0.1:8000"
+# ==============================
 
 # Provide password at runtime:
-# sudo POSTGRES_PASSWORD='...' ./bootstrap.sh
+# sudo POSTGRES_PASSWORD='SuperStrongPassword' ./bootstrap.sh
 POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-}"
-# ==============================
 
 if [[ -z "${POSTGRES_PASSWORD}" ]]; then
   echo "ERROR: POSTGRES_PASSWORD is empty."
@@ -22,15 +24,15 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 
 echo "==> System update"
-apt-get update -y
-apt-get upgrade -y
+sudo apt-get update -y
+sudo apt-get upgrade -y
 
 echo "==> Install packages"
-apt-get install -y \
+sudo apt-get install -y \
   git nginx certbot python3-certbot-nginx \
   python3.12-venv build-essential python3-dev libpq-dev \
   postgresql postgresql-contrib \
-  libgl1 libglib2.0-0 libsm6 libxrender1 libxext6
+  libgl1 libglib2.0-0t64 libsm6 libxrender1 libxext6
 
 echo "==> Clone/update repo"
 if [[ -d "$APP_DIR/.git" ]]; then
@@ -41,6 +43,7 @@ fi
 
 echo "==> venv + requirements"
 sudo -u ubuntu bash -lc "
+  set -e
   cd '$APP_DIR'
   python3 -m venv venv
   source venv/bin/activate
@@ -55,23 +58,30 @@ POSTGRES_USER=postgres
 POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
+
+JWT_SECRET_KEY=generic
+
+AWS_ACCESS_KEY=dummy
+AWS_SECRET_ACCESS_KEY=dummy
 EOF"
 
 echo "==> Postgres: create db + set password (idempotent)"
-sudo -u postgres psql -v ON_ERROR_STOP=1 <<SQL
-DO \$\$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = '$DB_NAME') THEN
-    CREATE DATABASE $DB_NAME;
-  END IF;
-END
-\$\$;
+sudo systemctl enable --now postgresql
 
-ALTER USER postgres WITH PASSWORD '$POSTGRES_PASSWORD';
-SQL
+# Create DB if missing
+if ! sudo -u postgres psql -tAc "SELECT 1 FROM pg_database WHERE datname='${DB_NAME}'" | grep -q 1; then
+  sudo -u postgres createdb "${DB_NAME}"
+  echo "Created database: ${DB_NAME}"
+else
+  echo "Database already exists: ${DB_NAME}"
+fi
+
+# Set postgres password safely (escape single quotes)
+ESCAPED_PW="${POSTGRES_PASSWORD//\'/\'\'}"
+sudo -u postgres psql -v ON_ERROR_STOP=1 -c "ALTER USER postgres WITH PASSWORD '${ESCAPED_PW}';"
 
 echo "==> systemd service"
-tee /etc/systemd/system/fastapi.service > /dev/null <<EOF
+sudo tee "/etc/systemd/system/${SERVICE_NAME}.service" > /dev/null <<EOF
 [Unit]
 Description=FastAPI app (gunicorn)
 After=network.target postgresql.service
@@ -80,7 +90,7 @@ After=network.target postgresql.service
 User=ubuntu
 WorkingDirectory=$APP_DIR
 EnvironmentFile=$APP_DIR/.env
-ExecStart=$APP_DIR/venv/bin/gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 127.0.0.1:8000
+ExecStart=$APP_DIR/venv/bin/gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind $BIND_ADDR
 Restart=always
 RestartSec=3
 
@@ -88,16 +98,16 @@ RestartSec=3
 WantedBy=multi-user.target
 EOF
 
-systemctl daemon-reload
-systemctl enable --now fastapi
+sudo systemctl daemon-reload
+sudo systemctl enable --now "$SERVICE_NAME"
 
 echo "==> nginx config"
-tee /etc/nginx/sites-available/fastapi > /dev/null <<EOF
+sudo tee /etc/nginx/sites-available/fastapi > /dev/null <<EOF
 server {
-    server_name $DOMAIN www.$DOMAIN;
+    server_name $DOMAIN;
 
     location / {
-        proxy_pass http://127.0.0.1:8000;
+        proxy_pass http://$BIND_ADDR;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -106,20 +116,27 @@ server {
 }
 EOF
 
-ln -sf /etc/nginx/sites-available/fastapi /etc/nginx/sites-enabled/fastapi
-nginx -t
-systemctl restart nginx
+sudo ln -sf /etc/nginx/sites-available/fastapi /etc/nginx/sites-enabled/fastapi
+
+# Optional: disable default site if it's enabled (prevents conflicts)
+if [[ -e /etc/nginx/sites-enabled/default ]]; then
+  sudo rm -f /etc/nginx/sites-enabled/default
+fi
+
+sudo nginx -t
+sudo systemctl restart nginx
 
 echo "==> HTTPS (requires DNS already pointing to this instance)"
-certbot --nginx \
-  -d "$DOMAIN" -d "www.$DOMAIN" \
+sudo certbot --nginx \
+  -d "$DOMAIN" \
   --non-interactive --agree-tos -m "$EMAIL" --redirect || true
 
 echo "==> certbot timer"
-systemctl status certbot.timer --no-pager || true
+sudo systemctl status certbot.timer --no-pager || true
 
 echo "✅ Done."
 echo "Check:"
-echo "  systemctl status fastapi --no-pager"
+echo "  sudo systemctl status $SERVICE_NAME --no-pager"
+echo "  sudo journalctl -u $SERVICE_NAME -n 80 --no-pager"
 echo "  curl -I http://$DOMAIN"
 echo "  curl -I https://$DOMAIN"
