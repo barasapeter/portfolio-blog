@@ -21,7 +21,7 @@ variable "attach_eip" {
 }
 
 # Used by your bootstrap script (it requires it)
-# ⚠️ Note: this will end up in terraform state if passed directly.
+# Note: this will end up in terraform state if passed directly.
 variable "postgres_password" {
   type      = string
   sensitive = true
