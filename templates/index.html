@@ -65,15 +65,15 @@
 
           <!-- Mobile Brand -->
           <a href="/" class="lg:hidden group inline-flex items-baseline gap-2" hidden>
-            <!-- <span class="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
-              <code>IaM</code>
-            </span> -->
+            <span class="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+              IaM
+            </span>
 
             <span class="text-xl font-black tracking-tight
                           text-neutral-900 dark:text-neutral-100
                           group-hover:text-brand-600
                           transition-colors duration-200">
-              barasa
+              <code>barasa <span class="cursor-b font-extrabold"></span></code>
             </span>
           </a>
 
@@ -82,7 +82,6 @@
   <div id="terminal-wrapper" class="hidden lg:block">
     <div id="terminal" tabindex="0">
       <style>
-        /* Scoped to this component only */
         #terminal-wrapper { width: 340px; }
 
         #terminal{
@@ -98,18 +97,16 @@
           overflow: hidden;
         }
 
-        /* Top chrome */
         #terminal .term-chrome{
           display: flex;
           align-items: center;
           gap: 8px;
           height: 18px;
-          /* margin-bottom: 10px; */
           
         }
         #terminal .dot{
-          width: 10px;
-          height: 10px;
+          width: 8px;
+          height: 8px;
           border-radius: 999px;
           opacity: .95;
         }
@@ -117,10 +114,9 @@
         #terminal .dot.yellow{ background:#f59e0b; }
         #terminal .dot.green{ background:#22c55e; }
 
-        /* Body alignment */
         #terminal .term-body{
           display: flex;
-          align-items: baseline;       /* key for prompt/cursor alignment */
+          align-items: baseline; 
           gap: 6px;
           font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
           font-size: 13px;
@@ -132,13 +128,13 @@
         #terminal .prompt{
           color: #16a34a;
           font-weight: 800;
-          white-space: nowrap;         /* keep prompt in one line */
-          font-size: 18px;
+          white-space: nowrap;    
+          font-size: 14px;
         }
 
         #terminal #input-container{
           display: inline-flex;
-          align-items: baseline;       /* cursor baseline correction */
+          align-items: baseline;       
           gap: 0;
           min-width: 1px;
         }
@@ -146,17 +142,15 @@
         #terminal #input{
           display: inline;
           color: inherit;
-          font-size: 18px;
+          font-size: 14px;
         }
 
-        /* Placeholder shows only when #input is empty (JS can still update it too) */
         #terminal #placeholder{
           color: rgba(100,116,139,.85);
           margin-left: 0;
-          font-size: 18px;
+          font-size: 14px;
         }
 
-        /* Cursor alignment */
         #terminal .cursor{
           display: inline-block;
           width: .6em;
@@ -170,14 +164,12 @@
         }
         @keyframes blink{ 50%{ opacity:0; } }
 
-        /* Focus ring */
         #terminal:focus{
           outline: none;
           box-shadow: 0 0 0 3px rgba(34,197,94,.18);
           border-color: rgba(34,197,94,.45);
         }
 
-        /* Dark mode (Tailwind .dark) */
         .dark #terminal{
           background: rgba(2,6,23,.72);
           border-color: rgba(148,163,184,.22);
@@ -387,97 +379,12 @@
   </header>
 
   <div class="min-h-screen px-6 pt-0 pb-4 max-w-3xl mx-auto">
-    <div
-  id="outputCanvas"
-  class="hidden mt-4 mb-16 max-w-3xl"
->
-  <style>
-    /* Scoped only to the terminal output canvas */
-    #outputCanvas{
-      border-radius: 18px;
-      border: 1px solid rgba(34,197,94,.28);
-      background: rgba(2,6,23,.78);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      padding: 14px 16px 14px;
-      box-shadow: 0 0 0 1px rgba(15,23,42,.65) inset;
-    }
-
-    /* Subtle header row */
-    #outputCanvas .term-echo{
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      padding-bottom: 10px;
-      margin-bottom: 10px;
-      border-bottom: 1px solid rgba(148,163,184,.18);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      font-size: 13px;
-      line-height: 1.5;
-      letter-spacing: .15px;
-    }
-
-    #outputCanvas .term-sigil{
-      color: #86efac; /* soft green */
-      font-weight: 800;
-    }
-
-    #userInputEcho{
-      color: rgba(226,232,240,.92);
-      font-weight: 700;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-    }
-
-    /* Output area: let our generated HTML breathe */
-    #commandOutput{
-      margin: 0;
-      padding: 0;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      font-size: 13.5px;
-      line-height: 1.55;
-      letter-spacing: .15px;
-      color: rgba(226,232,240,.92);
-      white-space: normal; /* IMPORTANT: avoid the pre look */
-    }
-
-    /* If anything still writes plain text with newlines */
-    #commandOutput.plain{
-      white-space: pre-wrap;
-    }
-
-    /* Softer glow (optional, tasteful) */
-    #outputCanvas[data-glow="on"]{
-      box-shadow:
-        0 0 0 1px rgba(15,23,42,.65) inset,
-        0 0 18px rgba(34,197,94,.10);
-    }
-
-    /* Light mode fallback */
-    @media (prefers-color-scheme: light){
-      #outputCanvas{
-        background: rgba(255,255,255,.92);
-        border-color: rgba(34,197,94,.22);
-        box-shadow: 0 0 0 1px rgba(148,163,184,.18) inset;
-      }
-      #outputCanvas .term-echo{
-        border-bottom-color: rgba(148,163,184,.28);
-      }
-      #userInputEcho, #commandOutput{
-        color: rgba(15,23,42,.88);
-      }
-      #outputCanvas .term-sigil{
-        color: #15803d;
-      }
-    }
-  </style>
-
-  <div class="term-echo">
+    <div id="outputCanvas" class="hidden mt-4 mb-16 max-w-3xl">
+  <div style="display: none;">
     <span class="term-sigil">$</span>
     <span id="userInputEcho"></span>
   </div>
 
-  <!-- keep as <pre> for your JS, but style it like a normal container -->
   <pre id="commandOutput"></pre>
 </div>
 
@@ -1277,7 +1184,7 @@
             <div class="border border-gray-300 p-5 dark:border-neutral-800 dark:bg-neutral-950">
               <h3 class="font-bold text-gray-900 mb-3 dark:text-neutral-100">Architecture</h3>
               <div class="text-xs text-gray-700 space-y-2 dark:text-neutral-300">
-                <p>• Start with Minimum Viable Architecture—build incrementally</p>
+                <p>• Start with Minimum Viable Architecture-build incrementally</p>
                 <p>• Design for testability, deployability, and observability from day one</p>
                 <p>• Embrace evolutionary design</p>
                 <p>• Decoupling deployments from releases</p>
@@ -1287,18 +1194,18 @@
             <div class="border border-gray-300 p-5 dark:border-neutral-800 dark:bg-neutral-950">
               <h3 class="font-bold text-gray-900 mb-3 dark:text-neutral-100">Security</h3>
               <div class="text-xs text-gray-700 space-y-2 dark:text-neutral-300">
-                <p>• Shift-left security—integrate checks in CI/CD</p>
-                <p>• Zero Trust mindset—verify every request</p>
-                <p>• Defense in depth—multiple security layers</p>
+                <p>• Shift-left security-integrate checks in CI/CD</p>
+                <p>• Zero Trust mindset-verify every request</p>
+                <p>• Defense in depth-multiple security layers</p>
               </div>
             </div>
 
             <div class="border border-gray-300 p-5 dark:border-neutral-800 dark:bg-neutral-950">
               <h3 class="font-bold text-gray-900 mb-3 dark:text-neutral-100">Operations</h3>
               <div class="text-xs text-gray-700 space-y-2 dark:text-neutral-300">
-                <p>• Automate toil—if you do it twice, script it</p>
-                <p>• Observability over monitoring—understand why things fail</p>
-                <p>• Blameless post-mortems—learn and improve</p>
+                <p>• Automate toil-if you do it twice, script it</p>
+                <p>• Observability over monitoring-understand why things fail</p>
+                <p>• Blameless post-mortems-learn and improve</p>
               </div>
             </div>
           </div>
@@ -1306,9 +1213,9 @@
           <div class="border border-gray-300 p-5 dark:border-neutral-800 dark:bg-neutral-950">
             <h3 class="font-bold text-gray-900 mb-3 dark:text-neutral-100">Collaboration</h3>
             <div class="text-sm text-gray-700 space-y-2 dark:text-neutral-300">
-              <p>• Documentation is code—Architecture Decision Records (ADRs), runbooks, API specs</p>
-              <p>• Mentorship mindset—uplift team capabilities through pair programming, code reviews</p>
-              <p>• Agile pragmatism—Scrum/Kanban as tools, not dogma</p>
+              <p>• Documentation is code-Architecture Decision Records (ADRs), runbooks, API specs</p>
+              <p>• Mentorship mindset-uplift team capabilities through pair programming, code reviews</p>
+              <p>• Agile pragmatism-Scrum/Kanban as tools, not dogma</p>
             </div>
           </div>
         </div>

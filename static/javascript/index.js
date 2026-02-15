@@ -283,7 +283,6 @@ function handleCommand(command) {
     }
 
     case "projects": {
-      // If you have a section anchor, update this to match your DOM
       output.innerHTML = wrap("projects", "", `<div class="t-ok">Jumping to Projects…</div>`);
       setTimeout(() => {
         window.location.href = "/#projects";
@@ -308,7 +307,6 @@ function handleCommand(command) {
     }
 
     case "clear": {
-      // keep your existing behavior
       outputCanvas.style.display = "none";
       output.innerHTML = "";
       userInputEcho.innerText = "";
@@ -325,9 +323,10 @@ function handleCommand(command) {
       output.innerHTML = wrap(
         "error",
         "",
-        `<div class="t-err">command not found:</div>
-         <div class="t-desc"><span class="t-kbd">${esc(raw)}</span></div>`,
-        `Type <span class="t-kbd">help</span> to see available commands.`
+        `
+         <div class="t-desc"><span class="t-kbd">${esc(raw)}</span> <p class="t-err">command not found</p></div>
+         `,
+        `Type "help" to see available commands.`
       );
       break;
     }
