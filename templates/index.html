@@ -78,128 +78,128 @@
           </a>
 
           <!-- Brand show only if on desktop -->
-<div class="flex items-center justify-between">
-  <div id="terminal-wrapper" class="hidden lg:block">
-    <div id="terminal" tabindex="0">
-      <style>
-        #terminal-wrapper { width: 340px; }
+        <div class="flex items-center justify-between">
+          <div id="terminal-wrapper" class="hidden lg:block">
+            <div id="terminal" tabindex="0">
+              <style>
+                #terminal-wrapper { width: 340px; }
 
-        #terminal{
-          box-sizing: border-box;
-          width: 100%;
-          padding: 12px 12px 12px;
-          border-radius: 18px;
-          border: 1px solid rgba(148,163,184,.45);
-          background: rgba(255,255,255,.92);
-          box-shadow: none;
-          cursor: text;
-          text-align: left;
-          overflow: hidden;
-        }
+                #terminal{
+                  box-sizing: border-box;
+                  width: 100%;
+                  padding: 12px 12px 12px;
+                  border-radius: 18px;
+                  border: 1px solid rgba(148,163,184,.45);
+                  background: rgba(255,255,255,.92);
+                  box-shadow: none;
+                  cursor: text;
+                  text-align: left;
+                  overflow: hidden;
+                }
 
-        #terminal .term-chrome{
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          height: 18px;
-          
-        }
-        #terminal .dot{
-          width: 8px;
-          height: 8px;
-          border-radius: 999px;
-          opacity: .95;
-        }
-        #terminal .dot.red{ background:#ef4444; }
-        #terminal .dot.yellow{ background:#f59e0b; }
-        #terminal .dot.green{ background:#22c55e; }
+                #terminal .term-chrome{
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  height: 18px;
+                  
+                }
+                #terminal .dot{
+                  width: 8px;
+                  height: 8px;
+                  border-radius: 999px;
+                  opacity: .95;
+                }
+                #terminal .dot.red{ background:#ef4444; }
+                #terminal .dot.yellow{ background:#f59e0b; }
+                #terminal .dot.green{ background:#22c55e; }
 
-        #terminal .term-body{
-          display: flex;
-          align-items: baseline; 
-          gap: 6px;
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-          font-size: 13px;
-          line-height: 1.6;
-          letter-spacing: .2px;
-          color: #0f172a;
-        }
+                #terminal .term-body{
+                  display: flex;
+                  align-items: baseline; 
+                  gap: 6px;
+                  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+                  font-size: 13px;
+                  line-height: 1.6;
+                  letter-spacing: .2px;
+                  color: #0f172a;
+                }
 
-        #terminal .prompt{
-          color: #16a34a;
-          font-weight: 800;
-          white-space: nowrap;    
-          font-size: 14px;
-        }
+                #terminal .prompt{
+                  color: #16a34a;
+                  font-weight: 800;
+                  white-space: nowrap;    
+                  font-size: 14px;
+                }
 
-        #terminal #input-container{
-          display: inline-flex;
-          align-items: baseline;       
-          gap: 0;
-          min-width: 1px;
-        }
+                #terminal #input-container{
+                  display: inline-flex;
+                  align-items: baseline;       
+                  gap: 0;
+                  min-width: 1px;
+                }
 
-        #terminal #input{
-          display: inline;
-          color: inherit;
-          font-size: 14px;
-        }
+                #terminal #input{
+                  display: inline;
+                  color: inherit;
+                  font-size: 14px;
+                }
 
-        #terminal #placeholder{
-          color: rgba(100,116,139,.85);
-          margin-left: 0;
-          font-size: 14px;
-        }
+                #terminal #placeholder{
+                  color: rgba(100,116,139,.85);
+                  margin-left: 0;
+                  font-size: 14px;
+                }
 
-        #terminal .cursor{
-          display: inline-block;
-          width: .6em;
-          height: 1.05em;
-          vertical-align: -0.18em;
-          margin-left: 0px;
-          background: currentColor;
-          color: #0f172a;
-          animation: blink 1s steps(1) infinite;
-          border-radius: 2px;
-        }
-        @keyframes blink{ 50%{ opacity:0; } }
+                #terminal .cursor{
+                  display: inline-block;
+                  width: .6em;
+                  height: 1.05em;
+                  vertical-align: -0.18em;
+                  margin-left: 0px;
+                  background: currentColor;
+                  color: #0f172a;
+                  animation: blink 1s steps(1) infinite;
+                  border-radius: 2px;
+                }
+                @keyframes blink{ 50%{ opacity:0; } }
 
-        #terminal:focus{
-          outline: none;
-          box-shadow: 0 0 0 3px rgba(34,197,94,.18);
-          border-color: rgba(34,197,94,.45);
-        }
+                #terminal:focus{
+                  outline: none;
+                  box-shadow: 0 0 0 3px rgba(34,197,94,.18);
+                  border-color: rgba(34,197,94,.45);
+                }
 
-        .dark #terminal{
-          background: rgba(2,6,23,.72);
-          border-color: rgba(148,163,184,.22);
-        }
-        .dark #terminal .term-body{ color:#e2e8f0; }
-        .dark #terminal #placeholder{ color: rgba(148,163,184,.75); }
-        .dark #terminal .cursor{ color:#e2e8f0; }
-      </style>
+                .dark #terminal{
+                  background: rgba(2,6,23,.72);
+                  border-color: rgba(148,163,184,.22);
+                }
+                .dark #terminal .term-body{ color:#e2e8f0; }
+                .dark #terminal #placeholder{ color: rgba(148,163,184,.75); }
+                .dark #terminal .cursor{ color:#e2e8f0; }
+              </style>
 
-      <div class="term-chrome">
-        <span class="dot red"></span>
-        <span class="dot yellow"></span>
-        <span class="dot green"></span>
-      </div>
+              <div class="term-chrome">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
 
-      <div class="term-body">
-        <span class="prompt font-extrabold">guest@portfolio:~$</span>
+              <div class="term-body">
+                <span class="prompt font-extrabold">guest@portfolio:~$</span>
 
-        <span id="input-container">
-          <span id="input" class="input"></span>
-          <span class="cursor font-extrabold"></span>
-          <!-- Placeholder text requested -->
-          <span id="placeholder" class="placeholder">"help"</span>
-        </span>
-      </div>
-    </div>
+                <span id="input-container">
+                  <span id="input" class="input"></span>
+                  <span class="cursor font-extrabold"></span>
+                  <!-- Placeholder text requested -->
+                  <span id="placeholder" class="placeholder">"help"</span>
+                </span>
+              </div>
+            </div>
 
-    <input id="hiddenInput" autocomplete="off" />
-  </div>
-</div>
+            <input id="hiddenInput" autocomplete="off" />
+          </div>
+        </div>
 
 
         </div>
@@ -218,6 +218,20 @@
           </a>
 
           <a
+            href="https://github.com/barasapeter"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-xl border border-neutral-800/20
+                  px-3.5 py-2 text-sm font-extrabold text-neutral-900
+                  hover:bg-[#00A651]/10 transition
+                  dark:border-neutral-200/20 dark:bg-neutral-100/10 dark:text-neutral-100 dark:hover:bg-neutral-100/20
+                  border border-[#00A651]/20 bg-[#00A651]/5 px-4 py-2"
+          >
+            <i data-lucide="github" class="w-4 h-4"></i>
+            GitHub
+          </a>
+
+          <a
             href="/blog"
             class="group inline-flex items-center gap-2
                    rounded-lg border border-[#00A651]/20
@@ -225,7 +239,7 @@
                    text-sm font-medium text-[#00A651]
                    hover:bg-[#00A651]/10
                    transition
-                   dark:border-[#00A651]/35 dark:bg-[#00A651]/10 dark:hover:bg-[#00A651]/15"
+                   dark:border-[#00A651]/35 dark:bg-[#00A651]/10 dark:hover:bg-[#00A651]/15 hidden"
           >
             <i data-lucide="book-open" class="w-4 h-4"></i>
             Blog
