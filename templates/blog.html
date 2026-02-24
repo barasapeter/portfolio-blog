@@ -168,7 +168,9 @@
                             </p>
                             {% endif %}
                         </div>
-
+                        <p class="text-[15px] leading-5 text-[#0f1419]">
+                            Slug:: {{ post.slug }}
+                        </p>
                         {% if post.tags %}
                         <div class="flex flex-wrap gap-1 mb-3">
                             {% for tag in post.tags %}
