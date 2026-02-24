@@ -51,7 +51,7 @@ def blog(
     )
 
     return templates.TemplateResponse(
-        "blog-new.html",
+        "blog.html",
         {
             "request": request,
             "posts": posts,
