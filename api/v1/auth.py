@@ -33,14 +33,6 @@ async def login(
 ):
     try:
 
-        if user_id:
-            user = db.query(User).filter(User.id == user_id).first()
-            if user:
-                return JSONResponse(
-                    status_code=200,
-                    content={"detail": "User already logged in"},
-                )
-
         payload = await request.json()
 
         identifier = payload.get("email") or payload.get("username")

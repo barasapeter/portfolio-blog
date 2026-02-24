@@ -12,18 +12,22 @@ from __future__ import annotations
 from datetime import datetime
 from typing import List, Optional
 
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field, ConfigDict, field_validator
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+from api.v1.auth_core import get_current_user, get_optional_user, verify_token
+
+from fastapi.responses import JSONResponse
 
 # ---- import your stuff ----
 from db.base import get_db
 from api.v1.auth_core import get_current_user
 from db import User, Category, Tag, Post, PostStatus
 
-router = APIRouter(prefix="/api/v1/posts", tags=["Posts"])
+router = APIRouter(prefix="/api/v1/post", tags=["Posts"])
 
 
 # -----------------------------
@@ -200,8 +204,19 @@ def ensure_unique_slug(db: Session, base_slug: str) -> str:
 def create_post(
     payload: PostCreate,
     db: Session = Depends(get_db),
-    current_user: "User" = Depends(get_current_user),
+    user_id: int | None = Depends(get_current_user),
 ):
+
+    current_user: User = db.query(User).filter(User.id == user_id).first()
+    if not current_user:
+        return JSONResponse(
+            status_code=404,
+            content={
+                "detail": "This user no longer exists in database.",
+                "debug": f"User ID {user_id}",
+            },
+        )
+
     # 1) Validate category if provided
     category = None
     if payload.category_id is not None:
