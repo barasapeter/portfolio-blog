@@ -1,12 +1,12 @@
-# MyPortfolioNPersonalBlog
+# My Portfolio and Personal
 
-A FastAPI-based portfolio and personal blog project with an emphasis on:
+A FastAPI portfolio and personal blog project with an emphasis on:
 
 - **Request routing** (API + server-rendered pages)
 - **Application containerization** (Docker / Docker Compose)
 - **Infrastructure provisioning** (Terraform on AWS)
 
-This repository is intentionally both an application codebase and a DevOps playground.
+This repo is intentionally both an application codebase and a DevOps playground.
 
 ## Tech Stack
 
@@ -191,6 +191,6 @@ For updates, `deploy.sh` pulls latest code, reinstalls dependencies, and restart
 
 ## Notes
 
-- This project currently stores user password values directly in `password_hash` in parts of the flow; hardening for production should include robust hashing and full security review.
+- This project currently stores user password values directly in `password_hash` in parts of the flow; hardening for production will include robust hashing and full security review.
 - API docs are disabled by default.
 - Several deployment values (domain/email/repo URL) are currently hardcoded in `bootstrap.sh` and should be parameterized for reuse.
