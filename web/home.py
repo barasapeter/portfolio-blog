@@ -5,6 +5,7 @@ import markdown
 import textwrap
 from typing import Any, List
 
+from fastapi.responses import RedirectResponse
 from fastapi import APIRouter, Depends, HTTPException, Request, Query
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session, joinedload
@@ -14,7 +15,6 @@ from db import Post, PostStatus, User
 
 from schemas.item import Item, ItemCreate, ItemUpdate
 from api.v1.auth_core import get_current_user, get_optional_user, verify_token
-
 
 
 import json
@@ -157,8 +157,10 @@ def account(
 def post_editor_page(
     request: Request,
     db: Session = Depends(get_db),
-    user_id: int | None = Depends(get_current_user),
+    user_id: int | None = Depends(get_optional_user),
 ):
+    if not user_id:
+        return RedirectResponse(url="/blog")
     categories = (
         db.execute(select(Category).order_by(Category.name.asc())).scalars().all()
     )

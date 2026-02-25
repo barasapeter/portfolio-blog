@@ -4,54 +4,146 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Post Editor</title>
+
+    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- GitHub Markdown styles (makes headings/lists/tables look correct) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.5.1/github-markdown.min.css"
+    />
+
+    <style>
+      /* Make the GitHub markdown styles fit nicely inside our preview card */
+      .markdown-body {
+        background: transparent;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .markdown-body pre {
+        border-radius: 0.75rem;
+        padding: 12px;
+      }
+      .markdown-body code {
+        font-size: 0.9em;
+      }
+      /* Prevent huge images breaking layout */
+      .markdown-body img {
+        max-width: 100%;
+        height: auto;
+      }
+    </style>
   </head>
+
   <body class="bg-slate-50 text-slate-900">
-    <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="max-w-6xl mx-auto px-4 py-10">
       <header class="mb-8">
         <h1 class="text-3xl font-bold">Write a blog post</h1>
-        <p class="text-slate-600 mt-2">Create, publish, and upload a featured image.</p>
+        <p class="text-slate-600 mt-2">
+          Create a post, then upload a featured image (saved as
+          <span class="font-mono text-sm bg-white px-2 py-1 rounded border"
+            >/static/images/featured/{post_id}.png</span
+          >)
+        </p>
       </header>
 
+      <!-- Alerts -->
       <div id="alertWrap" class="hidden mb-6">
         <div id="alertBox" class="rounded-lg border p-4"></div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Editor -->
         <section class="lg:col-span-2 bg-white border rounded-2xl shadow-sm p-6">
           <div class="space-y-5">
             <div>
               <label class="block text-sm font-medium mb-1">Title *</label>
-              <input id="title" class="w-full rounded-lg border px-3 py-2" />
+              <input
+                id="title"
+                class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring focus:ring-slate-200"
+              />
               <p id="titleErr" class="text-sm text-red-600 mt-1 hidden"></p>
             </div>
 
             <div>
               <div class="flex items-center justify-between">
-                <label class="block text-sm font-medium mb-1">Slug</label>
-                <button id="genSlugBtn" type="button" class="text-sm underline">generate</button>
+                <label class="block text-sm font-medium mb-1">Slug (optional)</label>
+                <button
+                  id="genSlugBtn"
+                  type="button"
+                  class="text-sm text-slate-700 hover:text-slate-900 underline"
+                >
+                  generate from title
+                </button>
               </div>
-              <input id="slug" class="w-full rounded-lg border px-3 py-2 font-mono text-sm" />
-              <p class="text-xs text-slate-500 mt-1">Optional (server can generate if omitted).</p>
+              <input
+                id="slug"
+                class="w-full rounded-lg border px-3 py-2 font-mono text-sm focus:outline-none focus:ring focus:ring-slate-200"
+              />
+              <p class="text-xs text-slate-500 mt-1">If empty, server will generate + ensure unique.</p>
               <p id="slugErr" class="text-sm text-red-600 mt-1 hidden"></p>
             </div>
 
             <div>
               <label class="block text-sm font-medium mb-1">Excerpt</label>
-              <textarea id="excerpt" rows="3" class="w-full rounded-lg border px-3 py-2"></textarea>
+              <textarea
+                id="excerpt"
+                rows="3"
+                class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring focus:ring-slate-200"
+              ></textarea>
             </div>
 
+            <!-- Content + Live Preview -->
             <div>
-              <label class="block text-sm font-medium mb-1">Content</label>
-              <textarea id="content" rows="14" class="w-full rounded-lg border px-3 py-2 font-mono text-sm"></textarea>
-              <p id="contentErr" class="text-sm text-red-600 mt-1 hidden"></p>
+              <div class="flex items-center justify-between">
+                <label class="block text-sm font-medium mb-1">Content (Markdown) *</label>
+                <div class="flex items-center gap-2">
+                  <label class="text-xs text-slate-600 inline-flex items-center gap-2 cursor-pointer">
+                    <input id="sanitizeToggle" type="checkbox" class="rounded" checked />
+                    Sanitize preview
+                  </label>
+                  <span class="text-xs text-slate-500">Live preview updates as you type</span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <!-- Editor -->
+                <div>
+                  <textarea
+                    id="content"
+                    rows="16"
+                    class="w-full rounded-lg border px-3 py-2 font-mono text-sm focus:outline-none focus:ring focus:ring-slate-200"
+                    placeholder="# Title&#10;&#10;## Subtitle&#10;&#10;- list item&#10;- list item&#10;&#10;```python&#10;print('hello')&#10;```&#10;"
+                  ></textarea>
+                  <p id="contentErr" class="text-sm text-red-600 mt-1 hidden"></p>
+                </div>
+
+                <!-- Preview -->
+                <div class="rounded-xl border bg-slate-50 p-4 overflow-auto max-h-[460px]">
+                  <div class="text-xs text-slate-500 mb-2">Preview</div>
+
+                  <!-- markdown-body styles everything inside -->
+                  <article id="preview" class="markdown-body">
+                    <p class="text-slate-500 text-sm">Start typing to see the preview…</p>
+                  </article>
+                </div>
+              </div>
             </div>
 
             <div class="flex flex-wrap gap-3 pt-2">
-              <button id="draftBtn" type="button" class="rounded-xl border px-4 py-2 bg-white hover:bg-slate-50">
+              <button
+                id="draftBtn"
+                type="button"
+                class="rounded-xl border px-4 py-2 bg-white hover:bg-slate-50 active:bg-slate-100"
+              >
                 Save Draft
               </button>
-              <button id="publishBtn" type="button" class="rounded-xl px-4 py-2 bg-slate-900 text-white hover:bg-slate-800">
+              <button
+                id="publishBtn"
+                type="button"
+                class="rounded-xl px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 active:bg-slate-950"
+              >
                 Publish
               </button>
 
@@ -60,26 +152,45 @@
                 <span id="spinner" class="hidden text-sm text-slate-600">Submitting…</span>
               </div>
             </div>
+
+            <div class="text-xs text-slate-500">
+              Auth: sends <span class="font-mono">Authorization: Bearer &lt;token&gt;</span> if
+              <span class="font-mono">localStorage.access_token</span> exists.
+            </div>
           </div>
         </section>
 
+        <!-- Sidebar -->
         <aside class="bg-white border rounded-2xl shadow-sm p-6 space-y-6">
           <div>
-            <label class="block text-sm font-medium mb-1">Category</label>
-            <select id="category_id" class="w-full rounded-lg border px-3 py-2 bg-white"></select>
+            <label class="block text-sm font-medium mb-1">Category (optional)</label>
+            <select
+              id="category_id"
+              class="w-full rounded-lg border px-3 py-2 bg-white focus:outline-none focus:ring focus:ring-slate-200"
+            >
+              <option value="">Loading…</option>
+            </select>
             <p id="categoryErr" class="text-sm text-red-600 mt-1 hidden"></p>
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-2">Tags</label>
-            <div id="tagsWrap" class="flex flex-wrap gap-2"></div>
+            <label class="block text-sm font-medium mb-2">Tags (optional)</label>
+            <div id="tagsWrap" class="flex flex-wrap gap-2">
+              <span class="text-sm text-slate-500">Loading…</span>
+            </div>
           </div>
 
-          <div class="border-t pt-5 space-y-3 hidden">
+          <div class="border-t pt-5 space-y-3">
             <h2 class="text-lg font-semibold">Featured image</h2>
             <p class="text-sm text-slate-600">Upload after creating the post.</p>
 
-            <input id="featuredFile" type="file" accept="image/png,image/jpeg,image/webp" class="block w-full" disabled />
+            <input
+              id="featuredFile"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              class="block w-full"
+              disabled
+            />
             <button
               id="uploadBtn"
               type="button"
@@ -90,16 +201,31 @@
             </button>
 
             <p id="uploadHint" class="text-xs text-slate-500">Create a post first to enable upload.</p>
+
+            <div id="featuredPreviewWrap" class="hidden">
+              <div class="text-xs text-slate-500 mb-2">Saved image</div>
+              <img id="featuredPreview" alt="Featured preview" class="w-full rounded-xl border bg-white" />
+            </div>
           </div>
         </aside>
       </div>
     </div>
 
+    <!-- Markdown renderer + sanitizer -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.11/dist/purify.min.js"></script>
+
     <script>
+      // =======================
+      // Server-injected data (Jinja2)
+      // =======================
       const API_BASE = "{{ api_base }}";
       const CATEGORIES = {{ categories_json | safe }};
       const TAGS = {{ tags_json | safe }};
 
+      // =======================
+      // DOM helpers
+      // =======================
       const el = (id) => document.getElementById(id);
 
       const alertWrap = el("alertWrap");
@@ -111,6 +237,9 @@
       const slug = el("slug");
       const excerpt = el("excerpt");
       const content = el("content");
+      const preview = el("preview");
+      const sanitizeToggle = el("sanitizeToggle");
+
       const category_id = el("category_id");
       const tagsWrap = el("tagsWrap");
 
@@ -121,6 +250,8 @@
       const featuredFile = el("featuredFile");
       const uploadBtn = el("uploadBtn");
       const uploadHint = el("uploadHint");
+      const featuredPreviewWrap = el("featuredPreviewWrap");
+      const featuredPreview = el("featuredPreview");
 
       const titleErr = el("titleErr");
       const slugErr = el("slugErr");
@@ -129,14 +260,26 @@
 
       let createdPostId = null;
 
-      function showAlert(type, title, message) {
+      // =======================
+      // UI helpers
+      // =======================
+      function esc(s) {
+        return String(s)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function showAlert(type, t, msg) {
         alertWrap.classList.remove("hidden");
         const styles =
           type === "success"
             ? "bg-emerald-50 border-emerald-200 text-emerald-900"
             : "bg-red-50 border-red-200 text-red-900";
         alertBox.className = `rounded-lg border p-4 ${styles}`;
-        alertBox.innerHTML = `<div class="font-semibold">${esc(title)}</div><div class="mt-1 text-sm">${esc(message)}</div>`;
+        alertBox.innerHTML = `<div class="font-semibold">${esc(t)}</div><div class="mt-1 text-sm">${esc(msg)}</div>`;
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
@@ -152,6 +295,9 @@
         genSlugBtn.disabled = isBusy;
 
         statusPill.textContent = isBusy ? label : "idle";
+        statusPill.className =
+          "text-xs px-2 py-1 rounded-full border " +
+          (isBusy ? "bg-amber-50 border-amber-200 text-amber-800" : "bg-slate-100 border-slate-200 text-slate-700");
       }
 
       function setFieldError(node, msg) {
@@ -164,10 +310,6 @@
         setFieldError(slugErr, "");
         setFieldError(contentErr, "");
         setFieldError(categoryErr, "");
-      }
-
-      function esc(s) {
-        return String(s).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
       }
 
       function slugify(text) {
@@ -190,6 +332,37 @@
         return Array.from(document.querySelectorAll('input[name="tag"]:checked')).map((i) => Number(i.value));
       }
 
+      // =======================
+      // Markdown preview (advanced formatting)
+      // =======================
+      marked.setOptions({
+        gfm: true,
+        breaks: true,
+        headerIds: true,
+        mangle: false, // keeps emails/links readable
+      });
+
+      function renderPreview() {
+        const md = content.value || "";
+        if (!md.trim()) {
+          preview.innerHTML = `<p class="text-slate-500 text-sm">Start typing to see the preview…</p>`;
+          return;
+        }
+
+        // Markdown -> HTML (supports headings, lists, tables, code fences, etc.)
+        const rawHtml = marked.parse(md);
+
+        // Optional sanitize (recommended)
+        const html = sanitizeToggle.checked
+          ? DOMPurify.sanitize(rawHtml, { USE_PROFILES: { html: true } })
+          : rawHtml;
+
+        preview.innerHTML = html;
+      }
+
+      // =======================
+      // Validation
+      // =======================
       function validate() {
         clearAlert();
         clearFieldErrors();
@@ -203,21 +376,28 @@
           setFieldError(contentErr, "Content is required.");
           ok = false;
         }
-        // category_id is optional per backend, but if you want it required in UI:
-        // enforce it here. Otherwise remove this block.
-        if (!category_id.value) {
-          setFieldError(categoryErr, "Pick a category (or adjust UI if optional).");
+        // category optional in backend; enforce if you want:
+        // if (!category_id.value) { setFieldError(categoryErr, "Pick a category."); ok = false; }
+
+        if (slug.value.trim() && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug.value.trim())) {
+          setFieldError(slugErr, "Slug should be lowercase with hyphens (e.g. my-post-title).");
           ok = false;
         }
-
         return ok;
       }
 
       async function safeJson(res) {
         const text = await res.text();
-        try { return text ? JSON.parse(text) : null; } catch { return text || null; }
+        try {
+          return text ? JSON.parse(text) : null;
+        } catch {
+          return text || null;
+        }
       }
 
+      // =======================
+      // API actions
+      // =======================
       async function createPost(status) {
         if (!validate()) {
           showAlert("error", "Fix errors", "Please fix the highlighted fields.");
@@ -226,16 +406,16 @@
 
         setBusy(true, status === "published" ? "publishing" : "saving");
 
+        const tagIds = selectedTagIds();
         const payload = {
           title: title.value.trim(),
-          // slug is optional: only send if user typed it
           ...(slug.value.trim() ? { slug: slug.value.trim() } : {}),
           excerpt: excerpt.value.trim() || null,
           content: content.value,
-          featured_image: null, // image uploaded separately
+          featured_image: null,
           category_id: category_id.value ? Number(category_id.value) : null,
           status: status,
-          tag_ids: selectedTagIds().length ? selectedTagIds() : null,
+          tag_ids: tagIds.length ? tagIds : null,
         };
 
         try {
@@ -249,13 +429,13 @@
 
           if (res.status === 201) {
             createdPostId = body.id;
-            showAlert("success", "Post created", `Post #${body.id} created. You can now upload a featured image.`);
+            showAlert("success", "Post created", `Post #${body.id} created. Now you can upload a featured image.`);
             enableUpload();
             return;
           }
 
           if (res.status === 401) {
-            showAlert("error", "Unauthorized", "No/invalid token. Put access_token in localStorage or switch to cookie auth.");
+            showAlert("error", "Unauthorized", "Missing/invalid token. Set localStorage.access_token or use cookie auth.");
             return;
           }
 
@@ -266,7 +446,11 @@
             return;
           }
 
-          showAlert("error", `Request failed (${res.status})`, typeof body === "string" ? body : JSON.stringify(body ?? {}, null, 2));
+          showAlert(
+            "error",
+            `Request failed (${res.status})`,
+            typeof body === "string" ? body : JSON.stringify(body ?? {}, null, 2)
+          );
         } catch (e) {
           showAlert("error", "Network error", e.message || String(e));
         } finally {
@@ -277,7 +461,9 @@
       function enableUpload() {
         featuredFile.disabled = false;
         uploadBtn.disabled = false;
-        uploadHint.textContent = createdPostId ? `Uploading will save to /static/images/featured/${createdPostId}.png` : "Create a post first.";
+        uploadHint.textContent = createdPostId
+          ? `Uploading will save to /static/images/featured/${createdPostId}.png`
+          : "Create a post first to enable upload.";
       }
 
       async function uploadFeaturedImage() {
@@ -287,6 +473,7 @@
           showAlert("error", "No post yet", "Create the post first, then upload.");
           return;
         }
+
         const f = featuredFile.files?.[0];
         if (!f) {
           showAlert("error", "No file selected", "Please choose an image file.");
@@ -302,7 +489,7 @@
         try {
           const res = await fetch(`${API_BASE}/post/${createdPostId}/featured-image`, {
             method: "POST",
-            headers: { ...authHeaders() }, // do NOT set Content-Type manually for FormData
+            headers: { ...authHeaders() },
             body: fd,
           });
 
@@ -310,15 +497,21 @@
 
           if (res.ok) {
             showAlert("success", "Uploaded", `Saved as ${body.featured_image}`);
+            featuredPreviewWrap.classList.remove("hidden");
+            featuredPreview.src = `${body.featured_image}?t=${Date.now()}`;
             return;
           }
 
           if (res.status === 401) {
-            showAlert("error", "Unauthorized", "No/invalid token for upload.");
+            showAlert("error", "Unauthorized", "Missing/invalid token for upload.");
             return;
           }
 
-          showAlert("error", `Upload failed (${res.status})`, typeof body === "string" ? body : JSON.stringify(body ?? {}, null, 2));
+          showAlert(
+            "error",
+            `Upload failed (${res.status})`,
+            typeof body === "string" ? body : JSON.stringify(body ?? {}, null, 2)
+          );
         } catch (e) {
           showAlert("error", "Network error", e.message || String(e));
         } finally {
@@ -327,7 +520,9 @@
         }
       }
 
-      // Init UI from injected data
+      // =======================
+      // Init
+      // =======================
       function init() {
         // categories
         category_id.innerHTML = `<option value="">Select a category</option>`;
@@ -340,20 +535,30 @@
 
         // tags
         tagsWrap.innerHTML = "";
-        for (const t of TAGS) {
-          const label = document.createElement("label");
-          label.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full border bg-white hover:bg-slate-50 cursor-pointer text-sm";
-          label.innerHTML = `<input class="rounded" type="checkbox" name="tag" value="${t.id}" /><span>${esc(t.name)}</span>`;
-          tagsWrap.appendChild(label);
+        if (!TAGS.length) {
+          tagsWrap.innerHTML = `<span class="text-sm text-slate-500">No tags found.</span>`;
+        } else {
+          for (const t of TAGS) {
+            const label = document.createElement("label");
+            label.className =
+              "inline-flex items-center gap-2 px-3 py-1 rounded-full border bg-white hover:bg-slate-50 cursor-pointer text-sm";
+            label.innerHTML = `<input class="rounded" type="checkbox" name="tag" value="${t.id}" /><span>${esc(
+              t.name
+            )}</span>`;
+            tagsWrap.appendChild(label);
+          }
         }
 
-        genSlugBtn.addEventListener("click", () => {
-          slug.value = slugify(title.value);
-        });
-
+        genSlugBtn.addEventListener("click", () => (slug.value = slugify(title.value)));
         draftBtn.addEventListener("click", () => createPost("draft"));
         publishBtn.addEventListener("click", () => createPost("published"));
         uploadBtn.addEventListener("click", uploadFeaturedImage);
+
+        content.addEventListener("input", renderPreview);
+        sanitizeToggle.addEventListener("change", renderPreview);
+
+        // initial render
+        renderPreview();
       }
 
       init();
